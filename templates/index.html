@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Triagem do paciente</title>
+</head>
+<body>
+    <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
+        <h1>Triagem do paciente</h1>
+
+        <form action="/predict" method="post" style="margin-bottom:2em;display:flex;flex-direction:column;gap:8px;width:300px;">
+
+            <input type="number" name="age" placeholder="Idade" required>
+
+            <select name="sex" required>
+                <option value="">Sexo</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+            </select>
+
+            <select name="chestpain" required>
+                <option value="">Tipo de dor no peito</option>
+                <option value="TA">Angina típica</option>
+                <option value="ATA">Angina atípica</option>
+                <option value="NAP">Dor não anginosa</option>
+                <option value="ASY">Assintomático</option>
+            </select>
+
+            <input type="number" name="restingbp" placeholder="Pressão em repouso" required>
+
+            <input type="number" step="0.1" name="cholesterol" placeholder="Colesterol" required>
+
+            <select name="fastingbs" required>
+                <option value="">Glicemia em jejum &gt; 120 mg/dl?</option>
+                <option value="1">Sim</option>
+                <option value="0">Não</option>
+            </select>
+
+            <select name="restingecg" required>
+                <option value="">ECG em repouso</option>
+                <option value="Normal">Normal</option>
+                <option value="ST">Alteração ST-T</option>
+                <option value="LVH">Hipertrofia ventricular esquerda</option>
+            </select>
+
+            <input type="number" name="maxhr" placeholder="Frequência cardíaca máxima" required>
+
+            <select name="exerciseangina" required>
+                <option value="">Angina induzida por exercício?</option>
+                <option value="Y">Sim</option>
+                <option value="N">Não</option>
+            </select>
+
+            <input type="number" step="0.1" name="oldpeak" placeholder="Oldpeak (depressão ST)" required>
+
+            <select name="stslope" required>
+                <option value="">Inclinação ST</option>
+                <option value="Up">Ascendente</option>
+                <option value="Flat">Plano</option>
+                <option value="Down">Descendente</option>
+            </select>
+
+            <button type="submit">Enviar</button>
+        </form>
+
+        {% if result %}
+            <h2>{{ result }}</h2>
+        {% endif %}
+    </div>
+</body>
+</html>

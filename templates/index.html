@@ -8,7 +8,7 @@
     <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
         <h1>Triagem do paciente</h1>
 
-        <form action="/predict" method="post" style="margin-bottom:2em;display:flex;flex-direction:column;gap:8px;width:300px;">
+        <form id="triagem-form" style="margin-bottom:2em;display:flex;flex-direction:column;gap:8px;width:300px;">
 
             <input type="number" name="age" placeholder="Idade" required>
 
@@ -63,9 +63,23 @@
             <button type="submit">Enviar</button>
         </form>
 
-        {% if result %}
-            <h2>{{ result }}</h2>
-        {% endif %}
+        <h2 id="resultado"></h2>
     </div>
 </body>
 </html>
+<script>
+document.getElementById("triagem-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    const response = await fetch("/predict", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response.json();
+
+    document.getElementById("resultado").innerText = data.result;
+});
+</script>

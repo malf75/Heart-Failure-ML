@@ -1,7 +1,7 @@
 import joblib
 import pandas as pd
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
@@ -14,9 +14,8 @@ model = joblib.load('best_xgboost.pkl')
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/predict", response_class=HTMLResponse)
+@app.post("/predict")
 async def predict(
-    request: Request,
     age: int = Form(...),
     sex: str = Form(...),
     chestpain: str = Form(...),
@@ -50,7 +49,4 @@ async def predict(
     else:
         result = f'{proba[0][1] * 100:.2f}% com doença'
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "result": result
-    })
+    return JSONResponse({"result": result})

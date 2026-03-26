@@ -63,7 +63,7 @@
             <button type="submit">Enviar</button>
         </form>
 
-        <h2 id="resultado"></h2>
+        <div id="resultado"></div>
     </div>
 </body>
 </html>
@@ -80,6 +80,11 @@ document.getElementById("triagem-form").addEventListener("submit", async functio
 
     const data = await response.json();
 
-    document.getElementById("resultado").innerText = data.result;
+    if (data.results) {
+        const textOut = Object.entries(data.results).map(([model, prob]) => `<li>${model}: ${prob}</li>`);
+        document.getElementById("resultado").innerHTML = `<ul>${textOut.join('')}</ul>`;
+    } else {
+        document.getElementById("resultado").innerHTML = data.result || "Erro";
+    }
 });
 </script>

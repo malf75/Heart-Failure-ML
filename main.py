@@ -8,7 +8,12 @@ app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
-model = joblib.load('best_xgboost.pkl')
+model_xgb = joblib.load('best_xgboost.pkl')
+model_rf = joblib.load('best_random_forest.pkl')
+model_lr = joblib.load('best_logistic_regression.pkl')
+model_svm = joblib.load('best_svm.pkl')
+
+models = [model_xgb, model_rf, model_lr, model_svm]
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -43,10 +48,13 @@ async def predict(
         'ST_Slope': stslope
     }])
 
-    proba = model.predict_proba(data)
-    if proba[0][0] > proba[0][1]:
-        result = f'{proba[0][0] * 100:.2f}% sem doença'
-    else:
-        result = f'{proba[0][1] * 100:.2f}% com doença'
+    probs = [m.predict_proba(data)[0] for m in models]
+    model_names = ["XGBoost", "Random Forest", "Regressão Logística", "SVM"]
+    results = {}
+    for name, p in zip(model_names, probs):
+        if p[1] > 0.5:
+            results[name] = f"{p[1] * 100:.2f}% com doença"
+        else:
+            results[name] = f"{p[0] * 100:.2f}% sem doença"
 
-    return JSONResponse({"result": result})
+    return JSONResponse({"results": results})

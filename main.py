@@ -12,8 +12,9 @@ model_xgb = joblib.load('best_xgboost.pkl')
 model_rf = joblib.load('best_random_forest.pkl')
 model_lr = joblib.load('best_logistic_regression.pkl')
 model_svm = joblib.load('best_svm.pkl')
+model_nn = joblib.load('best_nn.pkl')
 
-models = [model_xgb, model_rf, model_lr, model_svm]
+models = [model_xgb, model_rf, model_lr, model_svm, model_nn]
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -49,7 +50,7 @@ async def predict(
     }])
 
     probs = [m.predict_proba(data)[0] for m in models]
-    model_names = ["XGBoost", "Random Forest", "Regressão Logística", "SVM"]
+    model_names = ["XGBoost", "Random Forest", "Regressão Logística", "SVM", "Rede Neural"]
     results = {}
     for name, p in zip(model_names, probs):
         if p[1] > 0.5:

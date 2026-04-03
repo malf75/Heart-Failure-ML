@@ -3,18 +3,13 @@ import pandas as pd
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+from sklearn.preprocessing import StandardScaler
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
-model_xgb = joblib.load('best_xgboost.pkl')
-model_rf = joblib.load('best_random_forest.pkl')
-model_lr = joblib.load('best_logistic_regression.pkl')
-model_svm = joblib.load('best_svm.pkl')
-model_nn = joblib.load('best_nn.pkl')
-
-models = [model_xgb, model_rf, model_lr, model_svm, model_nn]
+stacking_model = joblib.load('./stacking.pkl')
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -46,16 +41,21 @@ async def predict(
         'MaxHR': maxhr,
         'ExerciseAngina': exerciseangina,
         'Oldpeak': oldpeak,
-        'ST_Slope': stslope
+        'ST_Slope': stslope,
+        'Diff_Age_MaxHR': maxhr - age,
+        'Bi_ExerciseAngina_ST_Slope': exerciseangina + '_' + stslope,
+        'Bi_ExerciseAngina_ChestPainType': exerciseangina + '_' + chestpain
     }])
 
-    probs = [m.predict_proba(data)[0] for m in models]
-    model_names = ["XGBoost", "Random Forest", "Regressão Logística", "SVM", "Rede Neural"]
-    results = {}
-    for name, p in zip(model_names, probs):
-        if p[1] > 0.5:
-            results[name] = f"{p[1] * 100:.2f}% com doença"
-        else:
-            results[name] = f"{p[0] * 100:.2f}% sem doença"
+    data[['Age_scaled', 'Oldpeak_scaled']] = StandardScaler().fit_transform(data[['Age', 'Oldpeak']])
+    data['Age_Oldpeak_Sum'] = data['Age_scaled'] + data['Oldpeak_scaled']
 
-    return JSONResponse({"results": results})
+    data.drop(['Age_scaled', 'Oldpeak_scaled'], axis=1, inplace=True)
+    prob = stacking_model.predict_proba(data)[0]
+    
+    if prob[1] > 0.5:
+        result = f"{prob[1] * 100:.2f}% com doença"
+    else:
+        result = f"{prob[0] * 100:.2f}% sem doença"
+
+    return JSONResponse({"result": result})

@@ -80,10 +80,7 @@ document.getElementById("triagem-form").addEventListener("submit", async functio
 
     const data = await response.json();
 
-    if (data.results) {
-        const textOut = Object.entries(data.results).map(([model, prob]) => `<li>${model}: ${prob}</li>`);
-        document.getElementById("resultado").innerHTML = `<ul>${textOut.join('')}</ul>`;
-    } else {
+    if (data.result) {
         document.getElementById("resultado").innerHTML = data.result || "Erro";
     }
 });

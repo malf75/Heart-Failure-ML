@@ -47,10 +47,8 @@ async def predict(
         'Bi_ExerciseAngina_ChestPainType': exerciseangina + '_' + chestpain
     }])
 
-    data[['Age_scaled', 'Oldpeak_scaled']] = StandardScaler().fit_transform(data[['Age', 'Oldpeak']])
-    data['Age_Oldpeak_Sum'] = data['Age_scaled'] + data['Oldpeak_scaled']
+    data['Age_Oldpeak_Sum'] = data['Age'] + data['Oldpeak']
 
-    data.drop(['Age_scaled', 'Oldpeak_scaled'], axis=1, inplace=True)
     prob = stacking_model.predict_proba(data)[0]
     
     if prob[1] > 0.5:

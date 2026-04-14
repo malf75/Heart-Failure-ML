@@ -42,12 +42,11 @@ async def predict(
         'ExerciseAngina': exerciseangina,
         'Oldpeak': oldpeak,
         'ST_Slope': stslope,
+        'Age_Oldpeak_Sum': age + oldpeak,
         'Diff_Age_MaxHR': maxhr - age,
         'Bi_ExerciseAngina_ST_Slope': exerciseangina + '_' + stslope,
         'Bi_ExerciseAngina_ChestPainType': exerciseangina + '_' + chestpain
     }])
-
-    data['Age_Oldpeak_Sum'] = data['Age'] + data['Oldpeak']
 
     prob = stacking_model.predict_proba(data)[0]
     

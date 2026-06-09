@@ -109,7 +109,6 @@ python-json-logger==4.0.0
 python-multipart==0.0.22
 python-slugify==8.0.4
 pytz==2025.2
-pywinpty==3.0.3
 PyYAML==6.0.3
 pyzmq==27.1.0
 referencing==0.37.0

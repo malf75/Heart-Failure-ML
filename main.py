@@ -58,3 +58,6 @@ async def predict(
         result = f"{prob[0] * 100:.2f}% sem doença"
 
     return JSONResponse({"result": result})
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

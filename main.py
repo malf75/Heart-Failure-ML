@@ -1,4 +1,5 @@
 import joblib
+import uvicorn
 import pandas as pd
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
